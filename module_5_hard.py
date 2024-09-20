@@ -42,7 +42,8 @@ class UrTube:
     def log_in(self, nickname, password):
         for i in range(len(self.users)):                # перебираем список пользователей
             if nickname == self.users[i].nickname and hash(password) == self.users[i].password:
-                self.current_user = nickname
+                self.current_user = self.users[i]
+                break
 
     def log_out(self):
         self.current_user = None
@@ -63,11 +64,9 @@ class UrTube:
             for i in range(len(self.videos)):                   # перебираем список видео
                 if title == self.videos[i].title:               # если видео найдено
                     if self.videos[i].adult_mode:               # проверяем возрастное ограничение
-                        for j in range(len(self.users)):        # находим возраст пользователя
-                            if self.users[j].nickname == self.current_user:
-                                if int(self.users[j].age) < 18:
-                                    print('Вам нет 18 лет, пожалуйста покиньте страницу')
-                                    return
+                        if self.current_user.age < 18:
+                            print('Вам нет 18 лет, пожалуйста покиньте страницу')
+                            return
                     for time_v in range(self.videos[i].time_now, self.videos[i].duration):
                         self.videos[i].time_now = time_v+1          # показываем видео от time_now до duration
                         print(self.videos[i].time_now, end=' ')     # выводим секунды в одну строку
@@ -97,7 +96,7 @@ ur.watch_video('Для чего девушкам парень программи
 
 # Проверка входа в другой аккаунт
 ur.register('vasya_pupkin', 'F8098FM8fjm9jmi', 55)
-print(ur.current_user)
+print(ur.current_user.nickname)
 
 # Попытка воспроизведения несуществующего видео
 ur.watch_video('Лучший язык программирования 2024 года!')
